@@ -1,0 +1,54 @@
+version: 2
+jobs:
+  build:
+    working_directory: ~/repo
+    docker:
+      - image: circleci/node:10
+
+    steps:
+      - checkout
+
+      - restore_cache:
+          key: yarn-{{ arch }}-{{ checksum "yarn.lock" }}
+
+      - run: yarn install --pure-lockfile
+
+      - save_cache:
+          key: yarn-{{ arch }}-{{ checksum "yarn.lock" }}
+          paths:
+            - node_modules
+
+      - run: yarn run build
+
+      - persist_to_workspace:
+          root: .
+          paths: .
+
+  publish:
+    working_directory: ~/repo
+    docker:
+      - image: circleci/node:10
+
+    steps:
+      - attach_workspace:
+          at: .
+
+      - run: echo "https://registry.npmjs.org/:_authToken=$NPM_TOKEN" > .npmrc
+      - run: yarn publish --access public --new-version "${CIRCLE_TAG:1}"
+
+workflows:
+  version: 2
+  build_and_publish:
+    jobs:
+      - build:
+          filters:
+            tags:
+              only: /v[0-9]+(\.[0-9]+)*/
+      - publish:
+          requires:
+            - build
+          filters:
+            tags:
+              only: /v[0-9]+(\.[0-9]+)*/
+            branches:
+              ignore: /.*/

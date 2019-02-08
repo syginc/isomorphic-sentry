@@ -1,0 +1,21 @@
+{
+  "name": "@syginc/isomorphic-sentry",
+  "version": "0.0.1",
+  "description": "Isomorphic sentry client for node and browser",
+  "license": "MIT",
+  "repository": "git@github.com:syginc/isomorphic-sentry.git",
+  "main": "./dist/main.js",
+  "browser": "./dist/browser.js",
+  "types": "./index.d.ts",
+  "scripts": {
+    "build": "tsc -P tsconfig.json"
+  },
+  "dependencies": {
+    "@sentry/browser": "^4.5.3",
+    "@sentry/node": "^4.5.3"
+  },
+  "devDependencies": {
+    "@types/node": "^10.12.23",
+    "typescript": "^3.3.3"
+  }
+}
