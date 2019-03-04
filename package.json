@@ -1,6 +1,6 @@
 {
   "name": "@syginc/isomorphic-sentry",
-  "version": "0.0.2",
+  "version": "1.0.0",
   "description": "Isomorphic sentry client for node and browser",
   "license": "MIT",
   "repository": "git@github.com:syginc/isomorphic-sentry.git",
