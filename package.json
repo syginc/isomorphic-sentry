@@ -11,11 +11,11 @@
     "build": "tsc -P tsconfig.json"
   },
   "dependencies": {
-    "@sentry/browser": "^4.5.3",
-    "@sentry/node": "^4.5.3"
+    "@sentry/browser": "^4.6.4",
+    "@sentry/node": "^4.6.4"
   },
   "devDependencies": {
-    "@types/node": "^10.12.23",
-    "typescript": "^3.3.3"
+    "@types/node": "^11.10.4",
+    "typescript": "^3.3.3333"
   }
 }
