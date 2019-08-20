@@ -1,40 +1,51 @@
 version: 2
 jobs:
   build:
-    working_directory: ~/repo
     docker:
-      - image: circleci/node:10
+      - image: node:8
 
     steps:
       - checkout
 
+      - run: ln -s /opt/yarn-v* /opt/yarn
+
       - restore_cache:
-          key: yarn-{{ arch }}-{{ checksum "yarn.lock" }}
+          key: yarn-{{ arch }}-{{ checksum "/opt/yarn/package.json" }}-{{ checksum "yarn.lock" }}
 
       - run: yarn install --pure-lockfile
 
       - save_cache:
-          key: yarn-{{ arch }}-{{ checksum "yarn.lock" }}
+          key: yarn-{{ arch }}-{{ checksum "/opt/yarn/package.json" }}-{{ checksum "yarn.lock" }}
           paths:
             - node_modules
+            - /usr/local/share/.cache/yarn
 
       - run: yarn run build
+
+      - run:
+          name: Collect test results
+          command: |
+            mkdir -p /tmp/test-results/junit/
+            find . -type f -regex ".*/build/ts-test-results/.*xml" -exec cp {} /tmp/test-results/junit/  \;
+          when: always
+
+      - store_test_results:
+          path: /tmp/test-results
 
       - persist_to_workspace:
           root: .
           paths: .
 
   publish:
-    working_directory: ~/repo
     docker:
-      - image: circleci/node:10
+      - image: node:8
 
     steps:
       - attach_workspace:
           at: .
 
-      - run: echo "https://registry.npmjs.org/:_authToken=$NPM_TOKEN" > .npmrc
-      - run: yarn publish --access public --new-version "${CIRCLE_TAG:1}"
+      - run: echo "//npm.pkg.github.com/:_authToken=$NPM_TOKEN" >> .npmrc
+      - run: yarn publish --access public --no-git-tag-version --new-version "${CIRCLE_TAG}"
 
 workflows:
   version: 2
@@ -43,12 +54,12 @@ workflows:
       - build:
           filters:
             tags:
-              only: /v[0-9]+(\.[0-9]+)*/
+              only: /[0-9]+(\.[0-9]+)*/
       - publish:
           requires:
             - build
           filters:
             tags:
-              only: /v[0-9]+(\.[0-9]+)*/
+              only: /[0-9]+(\.[0-9]+)*/
             branches:
               ignore: /.*/
