@@ -1,4 +1,5 @@
 .circleci/
+.idea/
 browser.ts
 main.ts
 tsconfig.json

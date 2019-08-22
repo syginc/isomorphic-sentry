@@ -1,5 +1,5 @@
 {
-  "name": "@syginc/isomorphic-sentry",
+  "name": "isomorphic-sentry",
   "version": "5.6.1",
   "description": "Isomorphic sentry client for node and browser",
   "license": "MIT",
