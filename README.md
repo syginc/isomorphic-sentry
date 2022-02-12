@@ -16,7 +16,7 @@ $ yarn add isomorphic-sentry
 
 ## Usage
 
-```
+```javascript
 import {captureMessage, init, SDK_NAME} from "isomorphic-sentry";
 
 if (SDK_NAME === "sentry.javascript.browser") {
